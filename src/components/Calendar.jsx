@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 function Calendar() {
-  const events = [
-    {
-      title: "Test Event",
-      start: "2024-03-13", // Should be in ISO 8601 format
-      end: "2024-03-13" // Should be in ISO 8601 format
-    }
-  ];
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from the URL
+    fetch("https://calendar-api-a5m2.onrender.com/get_requests")
+      .then(response => response.json())
+      .then(data => {
+        // Process the fetched data and set it as events
+        const processedEvents = data.map(item => ({
+          title: item.event_name,
+          start: item.event_date, // Should be in ISO 8601 format
+          end: item.event_date // Should be in ISO 8601 format
+        }));
+        console.log(processedEvents,"wwerwerer")
+        setEvents(processedEvents);
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+  }, []); // Empty dependency array to run the effect only once on mount
 
   return (
     <div>
